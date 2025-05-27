@@ -247,7 +247,7 @@ mkcd () {
 }
 kk_echo() {
     echo ""
-    cat $link_dir/kk_echo.md
+    cat $link_dir/_kk_echo.md
     echo ""
     echo ""
 }
