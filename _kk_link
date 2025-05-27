@@ -11,7 +11,7 @@ echo "Removing Done."
 HERE=$(dirname $(realpath -s $0))
 
 # KKANG_Core
-ln -s -f $HERE/_kk ~/_kk
+ln -s -f $HERE/kk ~/kk
 
 # ZSH
 mkdir -p -m 777 ~/.zsh
