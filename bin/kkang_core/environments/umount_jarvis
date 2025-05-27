@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ "$(uname -r)" =~ WSL2$ ]]; then
+    if [ -d /Jarvis/workspace ]; then
+        sudo umount -f /Jarvis/workspace
+        sudo umount -f /Bean/data
+        sudo umount -f /Bean/log
+        echo "Successfully mounted"
+    else
+        echo "There is no Jarvis folder in your home directory."
+    fi 
+else
+    echo "This is not a WSL server"
+fi
+

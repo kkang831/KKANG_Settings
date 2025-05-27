@@ -1,0 +1,50 @@
+#!/bin/bash
+
+############################################
+# Remove broken symbolic links
+echo "Below files and directories are removed."
+find ~ -maxdepth 1 -type l ! -exec test -e {} \; -print
+find ~ -maxdepth 1 -type l ! -exec test -e {} \; -delete
+echo "Removing Done."
+
+############################################
+HERE=$(dirname $(realpath -s $0))
+
+# KKANG_Core
+ln -s -f $HERE/_kk ~/_kk
+
+# ZSH
+mkdir -p -m 777 ~/.zsh
+ln -s -f $HERE/zsh/set_agnoster.zsh ~/.zsh/set_agnoster.zsh
+ln -s -f $HERE/zsh/set_spaceship.zsh ~/.zsh/set_spaceship.zsh
+ln -s -f $HERE/.zshrc ~/.zshrc
+ln -s -f $HERE/ohmyzsh ~/.oh-my-zsh
+
+# GIT
+ln -s -f $HERE/.gitconfig ~/.gitconfig
+
+# TMUX
+# ln -s -f $HERE/.tmux.conf ~/.tmux.conf
+tmux_version=$(tmux -V | cut -d ' ' -f 2 | cut -d '.' -f 1)
+# if [ "$tmux_version" -eq 3 ]; then
+#     ln -s -f $HERE/dotfiles/.tmux3.conf ~/.tmux.conf
+# elif [ "$tmux_version" -eq 2 ]; then
+#     ln -s -f $HERE/dotfiles/.tmux.conf ~/.tmux.conf
+# else
+#     echo "tmux version is neither 2.x nor 3.x"
+# fi
+ln -s -f $HERE/dotfiles/.tmux.conf ~/.tmux2.conf
+ln -s -f $HERE/dotfiles/.tmux3.conf ~/.tmux3.conf
+
+# bin
+ln -s -f $HERE/bin ~/
+
+# # MOUNT Jarvis
+# if [ ! -d /mnt/c/Users/owner ]; then
+#     cp $HERE/dotfiles/.zprofile ~/
+# fi
+# cp $HERE/bin/kkang_core/environments/mount_jarvis ~/
+# cp $HERE/bin/kkang_core/environments/umount_jarvis ~/
+
+# Finally
+echo "Done."

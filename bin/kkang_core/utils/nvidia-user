@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Check if GPU ID is provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 <GPU_ID>"
+  exit 1
+fi
+GPU_ID=$1
+
+# Get the list of PIDs running on the specified GPU
+PIDS=$(nvidia-smi -i $GPU_ID --query-compute-apps=pid --format=csv,noheader,nounits)
+
+if [ -z "$PIDS" ]; then
+  echo "No processes running on GPU $GPU_ID"
+  exit 0
+fi
+
+# Loop through each PID and extract the required information
+for PID in $PIDS; do
+  # Check if the process directory exists
+  if [ -d /proc/$PID ]; then
+    # Extract mount info and filter for /docker/
+    MOUNTINFO=$(grep "/docker/" /proc/$PID/mountinfo)
+
+    # Check if there are any /docker/ entries
+    if [ -z "$MOUNTINFO" ]; then
+      echo "No /docker/ entries for PID $PID"
+    else
+      # Extract 7 characters after /docker/
+      DOCKER_IDS=$(echo "$MOUNTINFO" | grep -oP '(?<=/docker/).{8}')
+      UNIQUE_DOCKER_IDS=$(echo "$DOCKER_IDS" | sort | uniq)
+      for DOCKER_ID in $UNIQUE_DOCKER_IDS; do
+        # Extract the container ID
+        CONTAINER_ID=$(docker inspect --format '{{.ID}}' $DOCKER_ID)
+        echo "Container ID: $CONTAINER_ID"
+
+        # Extract the container name
+        CONTAINER_NAME=$(docker inspect --format '{{.Name}}' $DOCKER_ID)
+        echo "Container Name: $CONTAINER_NAME"
+
+        # Extract the container image
+        CONTAINER_IMAGE=$(docker inspect --format '{{.Config.Image}}' $DOCKER_ID)
+        echo "Container Image: $CONTAINER_IMAGE"
+
+        # Extract the container command
+        CONTAINER_COMMAND=$(docker inspect --format '{{.Config.Cmd}}' $DOCKER_ID)
+        echo "Container Command: $CONTAINER_COMMAND"
+      done
+    fi
+  else
+    echo "Process directory for PID $PID does not exist"
+  fi
+done

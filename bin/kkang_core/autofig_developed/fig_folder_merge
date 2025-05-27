@@ -1,0 +1,56 @@
+#! /usr/bin/env python
+
+import os, glob
+import argparse
+import numpy as np
+from PIL import Image
+from typing import List
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Figure Folder Merge')
+    parser.add_argument('folders', nargs='+', help='')
+    parser.add_argument('--save_dir', type=str, default='merge_results', help='')
+    parser.add_argument('--merge_level', type=int, default=0, help='')
+    parser.add_argument('--base_folder', type=str, default=None, help='')
+    parser.add_argument('--image_type', type=str, default='png', help='png or jpg or jpeg')
+    return parser.parse_args()
+
+def merge_image_and_save(merge_folder_list:List[str],
+                        save_dir:str,
+                        base_folder:str=None,
+                        image_type:str='png'):
+    
+    if base_folder is None:
+        base_folder = merge_folder_list[0]
+
+    base_images_list = glob.glob(os.path.join(base_folder, f'*.{image_type}'))
+    for image in base_images_list:
+        merge_images = []
+        for folder in merge_folder_list:
+            merge_images.append(
+                np.array(Image.open(os.path.join(folder, os.path.basename(image))).convert('RGB')))
+        merge_images = Image.fromarray(np.concatenate(merge_images, axis=1))
+        merge_images.save(os.path.join(save_dir, os.path.basename(image)))
+
+
+
+def main():
+    args = parse_args()
+    os.makedirs(args.save_dir, exist_ok=True)
+    
+    if args.merge_level == 0:
+        merge_folder_list = args.folders
+        merge_image_and_save(merge_folder_list, args.save_dir, args.base_folder, args.image_type)
+
+    elif args.merge_level == 1:
+        
+        sub_folders_list = [os.path.join(args.base_folder, folder) 
+                            for folder in os.listdir(args.base_folder) 
+                            if os.path.isdir(os.path.join(args.base_folder, folder))]
+        merge_folder_list = [os.path.join(args.folders, sub_folder) for sub_folder in sub_folders_list]
+        
+        for merge_folder in merge_folder_list:
+            merge_image_and_save(merge_folder, os.path.join(args.save_dir, os.path.basename(merge_folder)), args.base_folder, args.image_type)
+
+if __name__ == '__main__':
+    main()

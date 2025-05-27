@@ -1,0 +1,35 @@
+#! /bin/bash
+
+_install_vim() {
+    echo "Installing Vim..."
+    if [ "$EUID" -ne 0 ]
+    then
+        echo "Non-root user, requesting sudo permissions..."
+        sudo add-apt-repository ppa:jonathonf/vim
+        sudo apt update
+        sudo apt install -y vim-gtk
+    else
+        echo "Root user, installing without sudo..."
+        add-apt-repository ppa:jonathonf/vim
+        apt update
+        apt install -y vim-gkt
+    fi
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    echo Now vim is installed with $(vim --version | head -n 1 | awk '{print $5}')
+}
+
+if ! which vim &> /dev/null
+then
+    echo "Vim is not installed. Installing now..."
+    _install_vim
+else
+    VIM_VERSION=$(vim --version | head -n 1 | awk '{print $5}')
+    MINIMUM_VERSION="9.0"
+    if [[ $(printf '%s\n' "$MINIMUM_VERSION" "$VIM_VERSION" | sort -V | head -n1) != "$MINIMUM_VERSION" ]]; then
+        echo "Vim version is less than $MINIMUM_VERSION"
+        _install_vim
+    else
+        echo "Vim is already installed"
+    fi
+fi

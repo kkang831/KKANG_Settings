@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+import os, sys, argparse, glob
+import numpy as np
+import cv2
+import PIL
+from PIL import Image
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Make input image gray')
+    parser.add_argument('-r',
+                        '--replace',
+                        default=False,
+                        action='store_true',
+                        help='replace input')
+    return parser.parse_args()
+
+def visualize_like_feature_map(img, num_vertical_patch=32, color_map=cv2.COLORMAP_JET):
+    
+
+    patch_size = img.shape[0] // num_vertical_patch
+
+    for y in range(0, img.shape[0], patch_size):
+        for x in range(0, img.shape[1], patch_size):
+            for c in range(img.shape[2]): # RGB 채널 처리
+                patch = img[y:y+patch_size, x:x+patch_size, c]
+                mean_color = np.mean(patch)
+                img[y:y+patch_size, x:x+patch_size, c] = mean_color
+
+    img = np.mean(img, axis=-1, keepdims=True).astype(np.uint8)
+    print(img.shape)
+    img = cv2.applyColorMap(img, color_map)
+
+    return img
+
+
+def main():
+    args = parse_args()
+
+    target_files = sys.stdin.read().splitlines()
+    print("image resize target files: %d EA" % len(target_files), file=sys.stderr)
+
+    for target_file in target_files:
+        im = cv2.imread(target_file)
+        im = visualize_like_feature_map(im, color_map=cv2.COLORMAP_RAINBOW)
+        # Possible colormap
+        # COLORMAP_AUTUMN 
+        # COLORMAP_BONE 
+        # COLORMAP_WINTER 
+        # COLORMAP_RAINBOW 
+        # COLORMAP_OCEAN 
+        # COLORMAP_SUMMER 
+        # COLORMAP_COOL 
+
+        path_output = None
+        if args.replace:
+            path_output = target_file
+        else:
+            parts = target_file.split('.')
+            head = ''.join(parts[:-1])
+            ext = parts[-1]
+            path_output = head + '_feature' + "." + ext
+        
+        cv2.imwrite(path_output, im)
+        print(path_output)
+
+if __name__ == '__main__':
+    main()
+

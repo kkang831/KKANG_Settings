@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# 현재 디렉토리 저장
+current_dir=$(pwd)
+
+# 상위 디렉토리 저장
+parent_dir=$(dirname "$current_dir")
+
+# 첫 번째 인자 확인 (-y option)
+if [[ $1 == '-y' ]]; then
+  # 바로 삭제
+  rm -rf "$current_dir"
+  echo "$parent_dir"
+else
+  # 사용자에게 삭제할 것인지 확인
+  read -p "Are you sure you want to delete the directory: $current_dir? [y/N] " confirm
+  if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+    # 사용자가 확인하면 삭제
+    rm -rf "$current_dir"
+    echo "$parent_dir"
+  else
+    # 그렇지 않으면 삭제하지 않음
+    echo "Aborted, no changes made."
+  fi
+fi

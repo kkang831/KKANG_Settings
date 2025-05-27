@@ -1,0 +1,37 @@
+#!/bin/bash
+
+directory=$my_jarvis
+pushd "$directory" || { echo "Failed to change directory. Exiting."; exit 1; }
+
+# 디렉토리 내의 이미지 파일들을 배열로 가져옴
+image_files=()
+for file in *.jpg *.jpeg *.png *.gif; do
+    [[ -f "$file" ]] && image_files+=("$file")
+done
+echo "image files:"
+echo "${image_files[@]}"
+
+# 이미지 파일 개수 확인
+num_files=${#image_files[@]}
+echo "number of files: "
+echo $num_files
+
+# 무작위로 이미지 파일 선택
+random_index=$((RANDOM % num_files))
+random_file=${image_files[$random_index]}
+
+echo "selected file: "
+echo $random_file
+
+# 저장 위치를 받음
+# 저장 위치가 없는 경우 현재 디렉토리로 설정
+destination=$1
+if [ -z "$destination" ]; then
+    destination="."
+fi
+
+# 이미지 파일을 지정한 위치로 복사
+popd >/dev/null
+cp "$directory/$random_file" "$destination/$random_file"
+echo ""
+echo "Random image file '$random_file' copied to the current directory."

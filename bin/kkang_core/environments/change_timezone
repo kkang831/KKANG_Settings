@@ -1,0 +1,33 @@
+#!/bin/bash
+
+_install_tzdata(){
+  if [ "$EUID" -ne 0 ]
+  then 
+    echo "Non-root user, requesting sudo permissions..."
+    sudo apt-get update && apt-get install -y tzdata
+  else
+    echo "Root user, installing without sudo..."
+    apt-get update && apt-get install -y tzdata
+  fi
+}
+
+_setup_tzdata(){
+  if [ "$EUID" -ne 0 ]
+  then 
+    sudo chmod 777 /etc/timezone
+    echo "Asia/Dokyo" > /etc/timezone
+    sudo dpkg-reconfigure -f noninteractive tzdata
+    sudo chmod 644 /etc/timezone
+  else
+    echo "Asia/Seoul" > /etc/timezone
+    dpkg-reconfigure -f noninteractive tzdata
+  fi
+}
+
+if ! dpkg -l | grep -q tzdata; then
+  echo 'tzdata not found, installing...'
+  _install_tzdata
+else
+  echo 'tzdata already installed'
+fi
+_setup_tzdata

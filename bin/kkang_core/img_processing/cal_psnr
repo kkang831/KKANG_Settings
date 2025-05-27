@@ -1,0 +1,36 @@
+
+#!/usr/bin/env python
+import os, argparse
+import cv2
+
+from tqdm import tqdm
+
+from skimage.metrics import peak_signal_noise_ratio
+def calculate_psnr(gt, test, gt_alpha=None):
+    return peak_signal_noise_ratio(gt/255, test/255, data_range=1)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Calculate PSNR')
+    parser.add_argument('-gt_dir', type=str, required=True)
+    parser.add_argument('-comparison_dir', type=str , required=True)
+    return parser.parse_args()
+
+def main(args):
+    gt_dir = args.gt_dir
+    comparison_dir = args.comparison_dir
+    file_name_list = sorted([name for name in os.listdir(comparison_dir) if 'png' in name])
+
+    psnr_value = 0  
+    for file_name in tqdm(file_name_list):
+        gt = cv2.imread(os.path.join(gt_dir, file_name))
+        test = cv2.imread(os.path.join(comparison_dir, file_name))
+        psnr_value += calculate_psnr(gt, test)
+
+    print(f"PSNR: {psnr_value/len(file_name_list)}")
+
+
+
+
+
+

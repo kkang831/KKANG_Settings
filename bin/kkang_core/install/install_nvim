@@ -1,0 +1,92 @@
+#! /bin/bash
+
+_install_nvim() {
+    
+    # 기존 neovim 패키지가 설치되어 있다면 제거
+    if dpkg -l | grep neovim; then
+        if [ "$EUID" -ne 0 ]; then
+            sudo apt-get remove neovim -y
+            sudo rm -rf /tmp/neovim
+        else
+            apt-get remove neovim -y
+            rm -rf /tmp/neovim
+	fi
+    fi
+
+    # 원하는 버전 지정
+    NEOVIM_VERSION="0.9.1"
+
+    # tmp 디렉터리로 이동
+    cd /tmp
+
+    # Neovim GitHub에서 원하는 버전의 소스코드를 clone
+    git clone https://github.com/neovim/neovim.git
+    cd neovim
+
+    # 원하는 버전으로 checkout
+    git checkout v${NEOVIM_VERSION}
+
+    # 빌드에 필요한 패키지 설치
+    if [ "$EUID" -ne 0 ]; then
+        sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl -y
+        make CMAKE_BUILD_TYPE=RelWithDebInfo
+        sudo make install
+    else
+        apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl -y
+        make CMAKE_BUILD_TYPE=RelWithDebInfo
+        make install
+    fi
+    pip install neovim
+    # sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+    #    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+}
+
+_check_already_installed(){
+    NVIM_VERSION=$(nvim --version | head -n 1 | cut -d " " -f 2 | cut -c 2-)
+    MINIMUM_VERSION="0.9.1"
+
+    if [[ $(printf '%s\n' "$MINIMUM_VERSION" "$NVIM_VERSION" | sort -V | head -n1) != "$MINIMUM_VERSION" ]]; then
+        echo "Neovim version is less than $MINIMUM_VERSION, current version is $NVIM_VERSION"
+        _install_nvim
+    else
+        echo "Neovim is already installed"
+    fi
+    pip install pynvim
+}
+
+_remove_nvim(){
+    if dpkg -l | grep neovim; then
+        if [ "$EUID" -ne 0 ]; then
+            sudo apt-get remove neovim -y
+        else
+            apt-get remove neovim -y
+        fi
+    fi
+}
+
+_show_help() {
+    echo "Usage: $0 [OPTION(optional)]"
+    echo
+    echo "Options:"
+    echo "  --remove     Remove nvim"
+    echo "  --help       Show this help message"
+    echo
+}
+
+
+case "$1" in
+    --remove)
+        _remove_nvim
+        ;;
+    --help)
+        _show_help
+        ;;
+    "")
+        _check_already_installed
+        # _install_nvim  
+        ;;
+    *)
+        echo "Unknown option: $1"
+        echo "Use --help for more information."
+        ;;
+esac

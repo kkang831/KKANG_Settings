@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+
+#################################################################
+# This code is designed to work in predefined WSL environments. #
+#################################################################
+
+import os 
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='This code is designed to work in predefined WSL environments. "home/lab/notebook"')
+    parser.add_argument('-M', '--mode', default='install', type=str, required=False,
+                        help='should be one of install, uninstall, list. default is install')
+    parser.add_argument('-N', '--name', default='', type=str, required=False,
+                        help=f'how to load snippet. ">>>name" will be the command.')
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    location = input("Where are you? (home/lab/notebook): ")
+    if location == 'home':
+        snippets_folder = "/mnt/c/Users/kyoun"
+    elif location == 'lab':
+        snippets_folder = "/mnt/c/Users/owner"
+    elif location == 'notebook':
+        snippets_folder = "/mnt/c/Users/owner"
+    else:
+        raise NotImplementedError("You should type predefined locations.")
+
+    snippets_folder = os.path.join(snippets_folder, "Appdata/Roaming/Code/User/snippets")
+
+    if args.mode == 'list':
+        from glob import glob
+        list = glob(os.path.join(snippets_folder, "*.code-snippets"))
+        for i in list:
+            print(os.path.splitext(os.path.basename(i))[0])
+
+    else:
+        if args.name == '':
+            raise ValueError("You must specify a name")
+        if args.name.endswith('.py'):
+            args.name = args.name[:-3]
+        snippets_path = os.path.join(snippets_folder, args.name + '.code-snippets')
+
+        if args.mode == 'remove':
+            if os.path.isfile(snippets_path):
+                if input(f"{snippets_path} will be deleted. (y/N) ").lower() == "y":
+                    os.remove(snippets_path)
+                else:
+                    pass
+            else:
+                print('There is no file to delete.')
+
+        if args.mode == 'install':
+            if os.path.isfile(snippets_path):
+                if input("snippet already exists, would you like to overwrite it? (y/N) ").lower() == 'y':
+                    pass
+                else:
+                    raise Exception("snippet already exists")
+                
+            target_file = f'{args.name}.py'
+            with open(target_file, 'r') as content:
+                with open(snippets_path, 'w') as snippet_file:
+                    snippet_file.write("{")
+                    snippet_file.write(f'"{args.name}": ')
+                    snippet_file.write('{\n')
+                    snippet_file.write(f'    "scope": "python",\n')
+                    snippet_file.write(f'    "prefix": ">>>{args.name}",\n')
+                    snippet_file.write(f'    "body": [\n')
+                    while True:
+                        line = content.readline()
+                        if not line: break
+
+                        if '"' in line:
+                            line = line.replace('"', "'")
+                        snippet_file.write('        "' + line.replace('\n', '",\n'))
+                        
+                    snippet_file.write(f"\n    ],\n")
+                    snippet_file.write('}\n')        
+                    snippet_file.write('}')
+
+if __name__ == '__main__':
+    main()
+    print('Done')

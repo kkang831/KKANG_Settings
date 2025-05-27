@@ -1,0 +1,25 @@
+#! /bin/bash
+
+_install_youcomplete_me(){
+    if [ "$EUID" -ne 0 ]
+    then
+        echo "Non-root user, requesting sudo permissions..."
+        sudo apt install -y cmake
+        sudo apt-get install -y g++-8
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+        pip install cmake
+        cd ~/.vim/bundle/YouCompleteMe
+        python install.py
+    else
+        echo "Root user, installing without sudo..."
+        apt install -y cmake
+        apt-get install -y g++-8
+        update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+        update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+        pip install cmake
+        cd ~/.vim/bundle/YouCompleteMe
+        python install.py --force-sudo
+    fi
+}
+_install_youcomplete_me

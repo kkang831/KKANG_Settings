@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+import os, sys, argparse, glob
+import sys
+import numpy as np
+import cv2
+import PIL
+from PIL import Image
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Image resize using opencv')
+    parser.add_argument('-r',
+                        '--replace',
+                        default=False,
+                        action='store_true',
+                        help='replace input')
+    parser.add_argument('-s', '--scale', type=float, default=1.0, help='Scale factor')
+    return parser.parse_args()
+
+def main():
+    args = parse_args()
+
+    target_files = sys.stdin.read().splitlines()
+    print("image resize target files: %d EA" % len(target_files), file=sys.stderr)
+
+    for target_file in target_files:
+        im = cv2.imread(target_file)
+        H, W, C = im.shape
+        im = cv2.resize(im,
+                        (int(W*args.scale), int(H*args.scale)),
+                        interpolation=cv2.INTER_LANCZOS4 if k > 1 else cv2.INTER_AREA)
+
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        im = Image.fromarray(im)
+
+        path_output = None
+        if args.replace:
+            path_output = target_file
+        else:
+            parts = target_file.split('.')
+            head = ''.join(parts[:-1])
+            ext = parts[-1]
+            path_output = head + '_scaled%.1f' % (args.scale) + "." + ext
+
+        im.save(path_output, quality=100, subsampling=0)
+        print(path_output)
+
+if __name__ == '__main__':
+    main()

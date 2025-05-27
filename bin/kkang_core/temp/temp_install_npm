@@ -1,0 +1,16 @@
+#! /bin/bash
+
+if [ "$EUID" -ne 0 ]; then
+    curl -sL https://deb.nodesource.com/setup_18.x -o ~/nodesource_setup.sh
+    #  | sudo -E bash -
+    bash ~/nodesource_setup.sh
+    sudo apt install nodejs
+    sudo npm install -g pyright
+else
+    apt-get install npm
+    curl -sL https://deb.nodesource.com/setup_18.x -o ~/nodesource_setup.sh
+    chmod +x ~/nodesource_setup.sh
+    bash ~/nodesource_setup.sh
+    apt install nodejs
+    npm install -g pyright
+fi

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$EUID" -ne 0 ]
+then
+    sudo chmod -R 777 $HOME/.cache
+    sudo chmod -R 777 $HOME/.config
+    sudo chmod -R 777 $link_dir
+else
+    chmod -R 777 $HOME/.cache
+    chmod -R 777 $HOME/.config
+fi

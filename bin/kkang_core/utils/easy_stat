@@ -1,0 +1,25 @@
+# /bin/bash
+
+# 첫번째 인자가 존재하는지 확인
+if [ -z "$1" ]; then
+    echo "Error: No argument supplied"
+    exit 1
+fi
+
+# 첫번째 인자가 디렉토리인지 확인
+if [ -d "$1" ]; then
+    if [ "$(expr substr $1 $(expr length $1) 1)" != "/" ]; then
+        stat -c '%a %n' $1/*
+    else
+        stat -c '%a %n' $1*
+    fi
+    
+# 첫번째 인자가 파일인지 확인
+elif [ -f "$1" ]; then
+    stat -c '%a %n' $1
+    
+else
+    echo "$1 is not a directory or a file"
+fi
+
+

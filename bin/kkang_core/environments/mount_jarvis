@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ "$(uname -r)" =~ WSL2$ ]]; then
+    if [ -d /Jarvis/workspace ]; then
+        sudo mount -t nfs jarvis.postech.ac.kr:/volume1/workspace /Jarvis/workspace
+        sudo mount -t nfs bean.postech.ac.kr:/volume1/data /Bean/data
+        sudo mount -t nfs bean.postech.ac.kr:/volume1/log /Bean/log
+        echo "Successfully mounted"
+    else
+        echo "There is no Jarvis folder in your home directory."
+    fi 
+else
+    echo "This is not a WSL server"
+fi
+
+exec zsh

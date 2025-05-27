@@ -1,0 +1,37 @@
+#!/bin/bash
+
+install_nvchad() {
+    echo "Installing nvchad..."
+    git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1 && nvim
+}
+
+remove_nvchad() {
+    echo "Removing nvchad..."
+    rm -rf ~/.config/nvim
+    rm -rf ~/.local/share/nvim
+}
+
+show_help() {
+    echo "Usage: $0 [OPTION(optional)]"
+    echo
+    echo "Options:"
+    echo "  --remove     Remove nvchad"
+    echo "  --help       Show this help message"
+    echo
+}
+
+case "$1" in
+    --remove)
+        remove_nvchad
+        ;;
+    --help)
+        show_help
+        ;;
+    "")
+        install_nvchad  # 기본 행동
+        ;;
+    *)
+        echo "Unknown option: $1"
+        echo "Use --help for more information."
+        ;;
+esac

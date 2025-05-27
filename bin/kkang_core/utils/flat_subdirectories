@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# 대상 디렉토리를 첫 번째 인자로 받습니다.
+target_dir=$1
+
+# 대상 디렉토리로부터 시작하여 모든 파일을 찾습니다.
+find "$target_dir" -type f | while read file; do
+    # 파일의 상대경로를 얻습니다.
+    relative_path="${file#"$target_dir"}"
+    
+    # 상대경로에서 "/"를 "_"로 변경합니다.
+    new_relative_path="${relative_path//\//_}"
+    
+    # 대상 디렉토리에 새로운 상대경로를 추가하여 새로운 절대경로를 만듭니다.
+    new_full_path="${target_dir}${new_relative_path}"
+    
+    # 원래 파일을 새로운 절대경로로 이동합니다.
+    mv "$file" "$new_full_path" -nv
+done
+
+# 빈 디렉토리를 찾아 제거합니다.
+find "$target_dir" -type d -empty -delete
