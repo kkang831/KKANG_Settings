@@ -33,7 +33,7 @@ tmux_version=$(tmux -V | cut -d ' ' -f 2 | cut -d '.' -f 1)
 # else
 #     echo "tmux version is neither 2.x nor 3.x"
 # fi
-ln -s -f $HERE/dotfiles/.tmux.conf ~/.tmux2.conf
+ln -s -f $HERE/dotfiles/.tmux2.conf ~/.tmux2.conf
 ln -s -f $HERE/dotfiles/.tmux3.conf ~/.tmux3.conf
 
 # bin

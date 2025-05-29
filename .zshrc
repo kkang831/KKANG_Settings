@@ -92,7 +92,7 @@ tmux_version=$(tmux -V | cut -d ' ' -f 2 | cut -d '.' -f 1)
 if [[ $tmux_version -eq 3 ]]; then
     alias tmux="tmux -2 -u -f $HOME/.tmux3.conf"
 else
-    alias tmux="tmux -2 -u -f $HOME/.tmux.conf"
+    alias tmux="tmux -2 -u -f $HOME/.tmux2.conf"
 fi
 # alias tmux="tmux -2 -u -f $HOME/.tmux2.conf"
 # tmux -2 : force tmux to assume the terminal supports 256 colours
