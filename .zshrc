@@ -43,7 +43,7 @@ if [ ! -d $ZSH_CUSTOM_THEMES/agnoster-zsh-theme ]; then
 fi
 if [[ ! -d ~/.fzf ]]; then
     echo "Installing fzf..."
-    install_fzf
+    # install_fzf
 fi
 
 plugins=(

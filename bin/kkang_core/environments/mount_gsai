@@ -1,0 +1,7 @@
+#!/bin/bash
+ 
+mkdir -p ./gsai
+sshfs -o reconnect \
+      -o ServerAliveInterval=15 \
+      -p 7777 \
+      kkang831@gsai-cluster.postech.ac.kr:/home/kkang831 ./gsai
