@@ -244,10 +244,10 @@ fi
 #########################################
 # Custom alias
 alias "kk_link=$link_dir/kk_link"
-alias "nv=nvim"
+# alias "nv=nvim"
 alias "cl=clear"
-alias "pip=pip3"
-alias "python=python3"
+# alias "pip=pip3"
+# alias "python=python3"
 alias "stat=easy_stat"
 
 #########################################
