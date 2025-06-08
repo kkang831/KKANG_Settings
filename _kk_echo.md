@@ -3,10 +3,11 @@
 #################################
 
 ## KK
-- _kk
-- _kk_echo
-- _kk_link
-- _kk_init_functions
+- kk_init
+- kk
+- kk_link
+- kk_echo
+- kk_init_functions
 
 ## Snippet
 - enter_vssnips

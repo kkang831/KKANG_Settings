@@ -26,11 +26,11 @@ if [ -L $dir_ohmyzsh ]; then
 fi
 ln -s -f $HERE/ohmyzsh ~/.oh-my-zsh
 
-# GIT
-ln -s -f $HERE/.gitconfig ~/.gitconfig
+# # GIT
+# ln -s -f $HERE/.gitconfig ~/.gitconfig
 
 # TMUX
-tmux_version=$(tmux -V | cut -d ' ' -f 2 | cut -d '.' -f 1)
+# tmux_version=$(tmux -V | cut -d ' ' -f 2 | cut -d '.' -f 1)
 ln -s -f $HERE/dotfiles/.tmux2.conf ~/.tmux2.conf
 ln -s -f $HERE/dotfiles/.tmux3.conf ~/.tmux3.conf
 

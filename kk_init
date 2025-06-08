@@ -1,4 +1,4 @@
 #!/bin/bash
-sh ./_kk_link
+sh ./kk_link
 exec zsh
 sh ~/kk
