@@ -5,7 +5,7 @@ export TERM=xterm-256color
 # export TERM=tmux-256color
 
 #########################################
-# Final version
+# ZSH configuration
 ZSH=$HOME/.oh-my-zsh                                # Path to your oh-my-zsh configuration.
 ZSH_CUSTOM=$HOME/.oh-my-zsh/custom                  # Path to your oh-my-zsh configuration.
 ZSH_CUSTOM_THEMES=$HOME/.oh-my-zsh/custom/themes    # Path to your oh-my-zsh configuration.
@@ -19,13 +19,38 @@ skip_global_compinit=1                              # For speed-up oh-my-zsh sta
 
 #########################################
 # Setting
-umask 000              # umask
+umask 000              # umask, which sets the default file permissions for newly created files and directories.
+                       # 000 means that new files will have permissions 666 (read and write for everyone),
+                       # and new directories will have permissions 777 (read, write, and execute for everyone).
+                       # This is generally not recommended for security reasons.
+                       # Note: umask does not affect existing files or directories.
 TZ=Asia/Seoul          # Time zone
 
 #########################################
 # THEME
 ZSH_THEME="agnoster"
 # ZSH_THEME="robbyrussell"              
+
+#########################################
+# Device specific settings
+DEVICES_LIST=(
+    "HOME_WSL"
+    "LAB_WSL"
+    "NOTEBOOK_WSL"
+    "LAB_MARK"
+    "LAB_GSAI"
+)
+
+DEVICE=""
+DEVICE_GROUP=""
+if [[ "$(uname -r)" =~ WSL2$ ]]; then
+    # WSL environment
+    export DEVICE_GROUP="WSL"
+else
+    # Not WSL environment (like Mark or GSAI)
+    export DEVICE_GROUP="NON_WSL"
+fi
+
 
 #########################################
 # PLUGINS
@@ -43,7 +68,7 @@ if [ ! -d $ZSH_CUSTOM_THEMES/agnoster-zsh-theme ]; then
 fi
 if [[ ! -d ~/.fzf ]]; then
     echo "Installing fzf..."
-    # install_fzf
+    install_fzf
 fi
 
 plugins=(
@@ -108,11 +133,9 @@ if [[ -n "$TMUX" ]]; then
     bindkey '^[[4~' end-of-line
 fi
 
-
 #########################################
-if [[ "$(uname -r)" =~ WSL2$ ]]; then
-    # WSL environment
-    
+# If device_group is WSL, then set WSL specific variables
+if [[ "$DEVICE_GROUP" == "WSL" ]]; then
     # >>> conda initialize >>>
     # !! Contents within this block are managed by 'conda init' !!
     __conda_setup="$('/home/kkang/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -127,11 +150,10 @@ if [[ "$(uname -r)" =~ WSL2$ ]]; then
     fi
     unset __conda_setup
     # <<< conda initialize <<<
-
     echo -----------------------------------------
     echo Hello Kyoungkook Kang
     echo
-    echo "You are in WSL environment. (KKANG_Vault)"
+    echo "You are in WSL environment. (KKANG_Settings)"
     echo $(uname -r)
     echo
     eval "echo LANG: $LANG"
@@ -143,13 +165,12 @@ if [[ "$(uname -r)" =~ WSL2$ ]]; then
 
     # MISC 
     export PATH=/usr/local/cuda-11.4/bin:$PATH
-    export LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64:$LD_LIBRARY_PATH
+    # export LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64:$LD_LIBRARY_PATH
     export DISPLAY="`grep nameserver /etc/resolv.conf | sed 's/nameserver //'`:0"
     export LIBGL_ALWAYS_INDIRECT=0
     export GEM_HOME=$HOME/gems
     export PATH=$HOME/gems/bin:$PATH
     alias "bundle_run=bundle exec jekyll serve"
-
 else
     # Not WSL environment (Docker container)
     
@@ -179,8 +200,8 @@ else
     eval "echo -n 'TMUX: '"
     eval tmux -V
     echo --------------------------------------------
-    export link_dir='/Jarvis/workspace/kkang/KKANG_Vault'
-    
+    export link_dir=$(dirname "$(realpath ~/.zshrc)")
+    # export link_dir='/Jarvis/workspace/kkang/KKANG_Vault'
 fi
 
 #########################################
