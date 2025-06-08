@@ -53,4 +53,4 @@ git remote set-url origin git#@github.com:kkang831/KKANG_Settings.git
       - dotfiles
 
 ### 25.06.08
-  - 
+  - Refine
