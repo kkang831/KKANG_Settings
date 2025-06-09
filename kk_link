@@ -38,9 +38,9 @@ ln -s -f $HERE/dotfiles/.tmux3.conf ~/.tmux3.conf
 ln -s -f $HERE/bin ~/
 
 # MOUNT Jarvis
-if [ ! -d /mnt/c/Users/owner ]; then
-    cp $HERE/dotfiles/.zprofile ~/
-fi
+# if [ ! -d /mnt/c/Users/owner ]; then
+#     cp $HERE/dotfiles/.zprofile ~/
+# fi
 cp $HERE/bin/kkang_core/environments/mount_jarvis ~/
 cp $HERE/bin/kkang_core/environments/umount_jarvis ~/
 cp $HERE/bin/kkang_core/environments/mount_gsai ~/
