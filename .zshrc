@@ -51,6 +51,11 @@ else
     export DEVICE_GROUP="NON_WSL"
 fi
 
+if [[ "$HOST" == *cgmark*]]; then
+    export DEVICE="LAB_MARK"
+elif [[ "$HOST" == *gsai* ]]; then
+    export DEVICE="LAB_GSAI"
+fi
 
 #########################################
 # PLUGINS
@@ -171,7 +176,7 @@ if [[ "$DEVICE_GROUP" == "WSL" ]]; then
     export GEM_HOME=$HOME/gems
     export PATH=$HOME/gems/bin:$PATH
     alias "bundle_run=bundle exec jekyll serve"
-else
+elif [[ "$DEVICE_GROUP" == "NON_WSL" ]] && [[ "$DEVICES" == "LAB_MARK"]]; then
     # Not WSL environment (Docker container)
     
     # >>> conda initialize >>>
@@ -193,7 +198,7 @@ else
     echo Hello Kyoungkook Kang
     echo
     echo "You are in Ubuntu environment. (KKANG_Vault)"
-    echo $(uname -r)
+    echo $DEVICES
     echo
     eval "echo LANG: $LANG"
     eval "echo TERM: $TERM"
@@ -202,6 +207,36 @@ else
     echo --------------------------------------------
     export link_dir=$(dirname "$(realpath ~/.zshrc)")
     # export link_dir='/Jarvis/workspace/kkang/KKANG_Vault'
+elif [[ "$DEVICE_GROUP" == "NON_WSL" ]] && [[ "$DEVICES" == "LAB_GSAI" ]]; then
+    # Not WSL environment (GSAI)
+    
+    # >>> conda initialize >>>
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$('/home/kkang831/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/opt/conda/etc/profile.d/conda.sh" ]; then
+            # . "/opt/conda/etc/profile.d/conda.sh"  # commented out by conda initialize
+        else
+            # export PATH="/opt/conda/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+    # <<< conda initialize <<<
+
+    echo --------------------------------------------
+    echo Hello Kyoungkook Kang
+    echo
+    echo "You are in GSAI environment. (KKANG_Vault)"
+    echo $DEVICES
+    echo
+    eval "echo LANG: $LANG"
+    eval "echo TERM: $TERM"
+    eval "echo -n 'TMUX: '"
+    eval tmux -V
+    echo --------------------------------------------
+    export link_dir=$(dirname "$(realpath ~/.zshrc)")
 fi
 
 #########################################
