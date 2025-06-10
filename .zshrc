@@ -51,7 +51,7 @@ else
     export DEVICE_GROUP="NON_WSL"
 fi
 
-if [[ "$HOST" == *cgmark*]]; then
+if [[ "$HOST" == *cgmark* ]]; then
     export DEVICE="LAB_MARK"
 elif [[ "$HOST" == *gsai* ]]; then
     export DEVICE="LAB_GSAI"
