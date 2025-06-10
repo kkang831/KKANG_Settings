@@ -176,7 +176,7 @@ if [[ "$DEVICE_GROUP" == "WSL" ]]; then
     export GEM_HOME=$HOME/gems
     export PATH=$HOME/gems/bin:$PATH
     alias "bundle_run=bundle exec jekyll serve"
-elif [[ "$DEVICE_GROUP" == "NON_WSL" ]] && [[ "$DEVICES" == "LAB_MARK"]]; then
+elif [[ "$DEVICE_GROUP" == "NON_WSL" ]] && [[ "$DEVICES" == "LAB_MARK" ]]; then
     # Not WSL environment (Docker container)
     
     # >>> conda initialize >>>
