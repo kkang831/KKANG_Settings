@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# parse command line options
+while getopts "p:" opt; do
+  case $opt in
+    p) PARTITION="$OPTARG"
+    ;;
+    *) echo "Usage: $0 -p partition_name"; exit 1
+    ;;
+  esac
+done
+
+if [ -z "$PARTITION" ]; then
+  echo "Usage: $0 -p partition_name"
+  exit 1
+fi
+
+echo -n 'All GPU Number: '
+total_gpu=$(sinfo --partition="$PARTITION" -o '%D %G' -h | awk '
+{
+  split($2, gres, ",")
+  last_gpu = 0
+  for (i in gres) {
+    if (match(gres[i], /gpu:[^:]*:([0-9]+)|gpu:([0-9]+)/, arr)) {
+      last_gpu = arr[1] ? arr[1] : arr[2]
+    }
+  }
+  sum += $1 * last_gpu
+}
+END {print sum}')
+
+echo -n 'Current using: '
+using_gpu=$(squeue --partition="$PARTITION" --states=R --Format=gres -h | \
+awk '{
+  if (match($0, /gpu:([0-9]+)/, arr)) sum += arr[1]
+}
+END {print sum}')
+
+echo -n 'Remain GPU: ' 
+echo "$((total_gpu - using_gpu))"
