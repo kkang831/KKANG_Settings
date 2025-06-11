@@ -28,7 +28,7 @@ total_gpu=$(sinfo --partition="$PARTITION" -o '%D %G' -h | awk '
   sum += $1 * last_gpu
 }
 END {print sum}')
-echo -n "$total_gpu"
+echo "$total_gpu"
 
 echo -n 'Current using: '
 using_gpu=$(squeue --partition="$PARTITION" --states=R --Format=gres -h | \
@@ -36,7 +36,7 @@ awk '{
   if (match($0, /gpu:([0-9]+)/, arr)) sum += arr[1]
 }
 END {print sum}')
-echo -n "$using_gpu"
+echo "$using_gpu"
 
 echo -n 'Remain GPU: ' 
 echo "$((total_gpu - using_gpu))"
