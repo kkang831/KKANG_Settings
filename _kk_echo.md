@@ -22,7 +22,7 @@
 - my_gan
 - my_diffusion
 - KKANG_Bin
-- KKANG_Vault
+- KKANG_Settings
 - KKANG_Docker
 - KKANG_Functions
 

@@ -56,6 +56,7 @@ prompt_status() {
   [[ $RETVAL -ne 0 ]] && symbols+="❌"
   [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="💿"
   [[ $UID -eq 0 ]] && symbols+="🐳"
+  [[ $SLURM_JOB_ID ]] && symbols+="🌐"  # SLURM job ID exists
 
   # [[ -n "$symbols" ]] && [[ $UID -ne 0 ]] && symbols+=""
   # [[ -n "$symbols" ]] && prompt_segment '' '' "$symbols"

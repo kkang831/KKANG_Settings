@@ -264,7 +264,7 @@ export my_gan=/Jarvis/workspace/kkang/GANModels
 export my_diffusion=/Jarvis/workspace/kkang/DiffusionModels
 export my_fonts=$link_dir/fonts
 export KKANG_Bin=/Jarvis/workspace/kkang/KKANG_Bin
-export KKANG_Vault=/Jarvis/workspace/kkang/KKANG_Vault
+export KKANG_Settings=/Jarvis/workspace/kkang/KKANG_Settings
 export KKANG_Docker=/Jarvis/workspace/kkang/KKANG_Docker
 export KKANG_Functions=/Jarvis/workspace/kkang/KKANG_Functions
 
