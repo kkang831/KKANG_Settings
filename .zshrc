@@ -323,3 +323,5 @@ enter_vssnips(){
 # This should be at the end of zshrc file
 source $ZSH_CUSTOM_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+alias ssrun='srun --pty'
+alias ssrunpy='srun --pty python -u -B'
