@@ -69,4 +69,4 @@ EXCLUDE_OPT=""
 [ -n "$EXCLUDE" ] && EXCLUDE_OPT="-x $EXCLUDE"
 
 echo "[ssalloc] partition='$PARTITION' gres=$GRES time=$TIME exclude='${EXCLUDE:-none}' queue='${QUEUE_OPT:-none}'"
-exec salloc -p "$PARTITION" $QUEUE_OPT $EXCLUDE_OPT -N 1 -n 1 --gres=gpu:"$GRES" -t "$TIME" /bin/zsh -l
+exec salloc -p "$PARTITION" $QUEUE_OPT $EXCLUDE_OPT -N 1 -n 1 --gres=gpu:"$GRES" -t "$TIME" --pty /bin/zsh -l
