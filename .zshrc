@@ -251,6 +251,7 @@ export PATH="$HOME/bin/kkang_core/img_processing:$PATH"
 export PATH="$HOME/bin/kkang_core/install:$PATH"
 export PATH="$HOME/bin/kkang_core/temp:$PATH"
 export PATH="$HOME/bin/kkang_core/utils:$PATH"
+export PATH="$HOME/bin/kkang_core/slurm:$PATH"
 export PATH="$HOME/bin/vscode_snippet:$PATH"
 export PATH="$HOME/bin/kkang_core/autofig_developed:$PATH"
 
