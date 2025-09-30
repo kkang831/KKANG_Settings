@@ -325,3 +325,4 @@ source $ZSH_CUSTOM_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 alias ssrun='srun --pty'
 alias ssrunpy='srun --pty python -u -B'
+alias exit_all='conda deactivate; exit'
