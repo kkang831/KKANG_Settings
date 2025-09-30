@@ -1,0 +1,72 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Usage: ssalloc <partition_name> [--gres N | -g N] [--time HH:MM:SS | -t HH:MM:SS] [--exclude LIST | -x LIST]"
+    echo "Example: ssalloc RTX6000ADA -g 2 -t 12:00:00 -x 69,61"
+    exit 1
+fi
+
+# 1) 파티션 별칭 (필요한 것만 몇 개)
+alias_to_partition() {
+  case "$(echo "$1" | tr '[:upper:]' '[:lower:]')" in
+    6000ada) echo "RTX6000ADA" ;;
+    a100)    echo "A100-80GB"  ;;
+    a6000)   echo "A6000"      ;;
+    3090)    echo "RTX3090"    ;;
+    a100)    echo "A100"       ;;
+    v100)    echo "V100"       ;;
+    *)       echo "$1"         ;;
+  esac
+}
+
+PARTITION="$(alias_to_partition "$1")"
+shift || true
+
+# 기본값
+GRES=1
+TIME="06:00:00"
+EXCLUDE=""
+
+# getopt 사용
+OPTS=$(getopt -o g:t:x: -l gres:,time:,exclude: -- "$@")
+eval set -- "$OPTS"
+
+
+while true; do
+  case "$1" in
+    -g|--gres)
+      GRES="$2"
+      shift 2
+      ;;
+    -t|--time)
+      TIME="$2"
+      shift 2
+      ;;
+    -x|--exclude)
+      # "69,61" -> "n69,n61" (이미 n붙어 있으면 그대로 유지)
+      raw="${2:?need value for -x}"
+      EXCLUDE="$(echo "$raw" | sed -E 's/(^|,)n?([0-9]+)/\1n\2/g')"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# --- A100-80GB 전용 queue ---
+if [[ "$PARTITION" == "A100-80GB" ]]; then
+  QUEUE_OPT="-q hpgpu"
+fi
+
+# --- exclude 옵션 조합 ---
+EXCLUDE_OPT=""
+[ -n "$EXCLUDE" ] && EXCLUDE_OPT="-x $EXCLUDE"
+
+echo "[ssalloc] partition='$PARTITION' gres=$GRES time=$TIME exclude='${EXCLUDE:-none}' queue='${QUEUE_OPT:-none}'"
+exec salloc -p "$PARTITION" $QUEUE_OPT $EXCLUDE_OPT -N 1 -n 1 --gres=gpu:"$GRES" -t "$TIME" /bin/zsh -l
